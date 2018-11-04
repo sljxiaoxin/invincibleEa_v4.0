@@ -136,7 +136,7 @@ void CStrategySmOne::Entry()
       return ;
    }
    
-   if(!isStochFastCrossOverArea && intCurrSignalPass <10){
+   if(!isStochFastCrossOverArea && intCurrSignalPass <15){
       if(strSignalType == "up" && oCStoch_fast.data[1]>21){
          isStochFastCrossOverArea = true;
          intStochFastCrossOverAreaPass = 0;
