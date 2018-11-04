@@ -8,26 +8,15 @@
 #property version   "2.0"
 #property strict
 
-#include "inc\CMaCross.mqh";
-#include "inc\CStochCross.mqh";
-
-//--------------------MaCross-----------------------
-
-extern bool      isUseMaCross         = false;   
-extern int       MaCross_MagicNumber  = 20181026;    
-extern double    MaCross_Lots         = 0.1;
-extern int       MaCross_intTP        = 6;
-extern int       MaCross_intSL        = 6;
-
-extern bool      isUseStochCross         = true;   
-extern int       StochCross_MagicNumber  = 20181026;    
-extern double    StochCross_Lots         = 0.1;
-extern int       StochCross_intTP        = 20;
-extern int       StochCross_intSL        = 20;
+#include "CStrategySmOne.mqh";
+ 
+extern int       SmOne_MagicNumber  = 20181103;    
+extern double    SmOne_Lots         = 0.1;
+extern int       SmOne_intTP        = 12;
+extern int       SmOne_intSL        = 12;
       
 
-CMaCross* oCMaCross;
-CStochCross* oCStochCross;
+CStrategySmOne* oCStrategySmOne;
 
 //+------------------------------------------------------------------+
 //| Expert initialization function                                   |
@@ -36,21 +25,10 @@ int OnInit()
 {
 //---
    Print("begin");
-   if(oCMaCross == NULL){
-      oCMaCross = new CMaCross(MaCross_MagicNumber);
-      oCStochCross = new CStochCross(StochCross_MagicNumber);
+   if(oCStrategySmOne == NULL){
+      oCStrategySmOne = new CStrategySmOne(SmOne_MagicNumber);
    }
-   if(isUseMaCross){
-      oCMaCross.Init(MaCross_Lots, MaCross_intTP, MaCross_intSL);
-   }else{
-      oCMaCross.Stop();
-   }
-   
-   if(isUseStochCross){
-      oCStochCross.Init(StochCross_Lots, StochCross_intTP, StochCross_intSL);
-   }else{
-      oCStochCross.Stop();
-   }
+   oCStrategySmOne.Init(SmOne_Lots,SmOne_intTP,SmOne_intSL);
    
 //---
    return(INIT_SUCCEEDED);
@@ -69,12 +47,7 @@ void OnDeinit(const int reason)
 
 void OnTick()
 {
-   if(isUseMaCross){
-      oCMaCross.Tick();
-   }
-   if(isUseStochCross){
-      oCStochCross.Tick();
-   }
+   oCStrategySmOne.Tick();
 }
 
 

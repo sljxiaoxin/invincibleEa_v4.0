@@ -111,6 +111,11 @@ void CStrategySmOne::GetSignal(void)
    }
 }
 
+void CStrategySmOne::CancelSignal()
+{
+   this.SetSignal("none");
+}
+
 void CStrategySmOne::SetSignal(string type)
 {
    strSignalType = type;
@@ -124,7 +129,7 @@ void CStrategySmOne::SetSignal(string type)
 
 void CStrategySmOne::Entry()
 {
-   if(!oCTicket.isCanOpenOrder){
+   if(!oCTicket.isCanOpenOrder()){
       return ;
    }
    if(isCurrSignalOpen){
@@ -143,6 +148,11 @@ void CStrategySmOne::Entry()
    }
    
    if(isStochFastCrossOverArea && strSignalType == "up"){
+      if(oCStoch_fast.data[2]>oCStoch_slow.data[2] && oCStoch_fast.data[1]<oCStoch_slow.data[1])
+      {
+         this.CancelSignal();
+         return ;
+      }
       if(oCMa_fast.data[1] >oCMa_fast.data[2] && 
            Close[2]>oCMa_fast.data[2] && 
             Close[1]>Open[1] && 
@@ -159,6 +169,11 @@ void CStrategySmOne::Entry()
    }
    
    if(isStochFastCrossOverArea && strSignalType == "down"){
+      if(oCStoch_fast.data[2]<oCStoch_slow.data[2] && oCStoch_fast.data[1]>oCStoch_slow.data[1])
+      {
+         this.CancelSignal();
+         return ;
+      }
       if(oCMa_fast.data[1] > oCMa_fast.data[2] && 
          Close[2] < oCMa_fast.data[2] && 
          Close[1]<Open[1] && 
