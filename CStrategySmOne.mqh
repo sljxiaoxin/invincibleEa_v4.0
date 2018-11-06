@@ -44,6 +44,9 @@ class CStrategySmOne
      void SetSignal(string type);
      void Entry();
      void Exit();
+     void CancelSignal();
+     bool FirstSValueCheck(int index);
+     bool FirstRValueCheck(int index);
    public:
       
       CStrategySmOne(int Magic){
@@ -189,5 +192,85 @@ void CStrategySmOne::Entry()
 
 void CStrategySmOne::Exit()
 {
-   
+   int orderpass = oCTicket.GetOrderPass();
+   int opType = oCTicket.GetOpType();
+   double firstSrValue = oCTicket.GetFirstSrValue();
+   int ticket = oCTicket.GetTicket();
+   double oop = oCTrade.GetOrderOpenPrice(ticket);
+   double tp;
+   if(ticket >0 && orderpass>10 && firstSrValue == -1){
+      int max = orderpass;
+      if(orderpass >48){
+         max = 48;
+      }
+      if(opType == OP_BUY)
+      {
+         for(int i=6;i<max;i++){
+            if(oCStoch_fast.data[i] < 65 && max -i >5 && this.FirstSValueCheck(i)){
+               firstSrValue = Low[i];
+               oCTicket.SetFirstSrValue(firstSrValue);
+               double stopLine = firstSrValue - 2*oCTrade.GetPip();
+               oCTrade.ModifySl(ticket,NormalizeDouble(firstSrValue - 2.5*oCTrade.GetPip(), Digits));
+               if(stopLine <oop){
+                  if(oop - stopLine>6*oCTrade.GetPip()){
+                     tp = oop - ((oop - stopLine)/2);
+                     if(Bid > tp){
+                        oCTrade.Close(ticket);
+                     }else{
+                        oCTrade.ModifyTp(ticket, NormalizeDouble(tp, Digits));
+                     }
+                  }
+                  
+                  if(oop - stopLine<3*oCTrade.GetPip()){
+                     //
+                  }
+                  
+               }
+            }
+         }
+      }
+      if(opType == OP_SELL)
+      {
+         for(int i=6;i<max;i++){
+            if(oCStoch_fast.data[i] >35 && max -i >5 && this.FirstRValueCheck(i)){
+               firstSrValue = High[i];
+               oCTicket.SetFirstSrValue(firstSrValue);
+            }
+         }
+      }
+   }
+}
+
+
+
+////////////////////
+//up support 
+bool CStrategySmOne::FirstSValueCheck(int index)
+{
+   for(int i=index-5;i<index;i++){
+      if(oCStoch_fast.data[i] < oCStoch_fast.data[index]){
+         return false;
+      }
+   }
+   for(int i=index+1;i<index+6;i++){
+      if(oCStoch_fast.data[i] < oCStoch_fast.data[index]){
+         return false;
+      }
+   }
+   return true;
+}
+//down R
+bool CStrategySmOne::FirstRValueCheck(int index)
+{
+   for(int i=index-5;i<index;i++){
+      if(oCStoch_fast.data[i] > oCStoch_fast.data[index]){
+         return false;
+      }
+   }
+   for(int i=index+1;i<index+6;i++){
+      if(oCStoch_fast.data[i] > oCStoch_fast.data[index]){
+         return false;
+      }
+   }
+   return true;
 }

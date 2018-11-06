@@ -88,5 +88,6 @@ bool CStochCross::SignalDownCheck(int nums, int level)
 
 string CStochCross::GetExitSignal()
 {
-   
+   //TODO
+   return "none";
 }

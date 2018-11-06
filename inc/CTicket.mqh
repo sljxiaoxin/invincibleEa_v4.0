@@ -14,7 +14,8 @@ class CTicket
       int ticket;
       int opType;
       int orderPass;
-      CTrade* oCTrade;   
+      CTrade* oCTrade;  
+      double firstSrValue; //first support resistance value 
    public:
       
       
@@ -23,6 +24,7 @@ class CTicket
          ticket = 0;
          opType = -1;
          orderPass = 0;
+         firstSrValue = -1;
       };
       
       void Update();
@@ -31,6 +33,11 @@ class CTicket
       bool Sell(double lots, int tp, int sl, string memo);
       void Close();
       bool isCanOpenOrder();
+      int  GetOrderPass();
+      int  GetOpType();
+      void SetFirstSrValue(double val);
+      double GetFirstSrValue();
+      int GetTicket();
       
       
 };
@@ -50,6 +57,7 @@ void CTicket::Reset(){
    ticket = 0;
    opType = -1;
    orderPass = 0;
+   firstSrValue = -1;
 }
 
 bool CTicket::Buy(double lots, int tp, int sl, string memo){
@@ -85,4 +93,29 @@ bool CTicket::isCanOpenOrder()
       return true;
    }
    return false;
+}
+
+int  CTicket::GetOrderPass()
+{
+   return this.orderPass;
+}
+
+int  CTicket::GetOpType()
+{
+   return this.opType;
+}
+
+void CTicket::SetFirstSrValue(double val)
+{
+   this.firstSrValue = val;
+}
+
+double CTicket::GetFirstSrValue()
+{
+   return this.firstSrValue;
+}
+
+int CTicket::GetTicket()
+{
+   return this.ticket;
 }
