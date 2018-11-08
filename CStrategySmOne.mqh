@@ -209,10 +209,18 @@ void CStrategySmOne::Exit()
             if(oCStoch_fast.data[i] < 65 && max -i >5 && this.FirstSValueCheck(i)){
                firstSrValue = Low[i];
                oCTicket.SetFirstSrValue(firstSrValue);
-               double stopLine = firstSrValue - 2*oCTrade.GetPip();
-               oCTrade.ModifySl(ticket,NormalizeDouble(firstSrValue - 2.5*oCTrade.GetPip(), Digits));
+               double stopLine = firstSrValue - 2.5*oCTrade.GetPip();
+               oCTrade.ModifySl(ticket,NormalizeDouble(stopLine, Digits));
                if(stopLine <oop){
-                  if(oop - stopLine>6*oCTrade.GetPip()){
+                  if(oop - stopLine>6*oCTrade.GetPip() && oop - stopLine<=10*oCTrade.GetPip()){
+                     tp = oop;
+                     if(Bid > tp){
+                        oCTrade.Close(ticket);
+                     }else{
+                        oCTrade.ModifyTp(ticket, NormalizeDouble(tp, Digits));
+                     }
+                  }
+                  if(oop - stopLine>10*oCTrade.GetPip()){
                      tp = oop - ((oop - stopLine)/2);
                      if(Bid > tp){
                         oCTrade.Close(ticket);
@@ -221,9 +229,6 @@ void CStrategySmOne::Exit()
                      }
                   }
                   
-                  if(oop - stopLine<3*oCTrade.GetPip()){
-                     //
-                  }
                   
                }
             }
@@ -235,6 +240,28 @@ void CStrategySmOne::Exit()
             if(oCStoch_fast.data[i] >35 && max -i >5 && this.FirstRValueCheck(i)){
                firstSrValue = High[i];
                oCTicket.SetFirstSrValue(firstSrValue);
+               double stopLine = firstSrValue + 2.5*oCTrade.GetPip();
+               oCTrade.ModifySl(ticket,NormalizeDouble(stopLine, Digits));
+               if(stopLine >oop){
+                  if(stopLine - oop>6*oCTrade.GetPip() && stopLine-oop<=10*oCTrade.GetPip()){
+                     tp = oop;
+                     if(Ask < tp){
+                        oCTrade.Close(ticket);
+                     }else{
+                        oCTrade.ModifyTp(ticket, NormalizeDouble(tp, Digits));
+                     }
+                  }
+                  if(stopLine-oop>10*oCTrade.GetPip()){
+                     tp = oop + ((stopLine-oop)/2);
+                     if(Ask < tp){
+                        oCTrade.Close(ticket);
+                     }else{
+                        oCTrade.ModifyTp(ticket, NormalizeDouble(tp, Digits));
+                     }
+                  }
+                  
+                  
+               }
             }
          }
       }
